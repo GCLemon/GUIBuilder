@@ -6,4 +6,5 @@
         <Button Name="fuga" Attr="fugafuga" />
     </SameLine>
     <ArrowButton Attr="piyo" Direction="Right" />
+    <InputText Attr="aaaa" />
 </Window>
