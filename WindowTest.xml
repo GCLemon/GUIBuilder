@@ -2,6 +2,8 @@
 
 <Window Name="Edit Palette">
     <SameLine>
-        <Text Text="AIUEO" />
+        <Text Name="hoge" />
+        <Button Name="fuga" Attr="fugafuga" />
     </SameLine>
+    <ArrowButton Attr="piyo" Direction="Right" />
 </Window>

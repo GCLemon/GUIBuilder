@@ -1,24 +1,29 @@
-using System;
+using System.Collections.Generic;
 
 namespace Altseed2
 {
-    class GUICombo<T> : GUIItem where T : Enum
+    class GUICombo : GUIItem
     {
-        public T CurrentItem { get; set; }
+        public int CurrentItem
+        {
+            get => _CurrentItem;
+            set => _CurrentItem = value;
+        }
+        private int _CurrentItem;
+
         public int VisibleItems { get; set; }
 
-        private string _Items;
+        public List<string> Items { get; }
 
         public GUICombo()
         {
-            _Items = String.Join("\t", (T[])Enum.GetValues(typeof(T)));
+            Items = new List<string>();
         }
 
         protected override void OnUpdate()
         {
-            int item = (int)(object)CurrentItem;
-            Engine.Tool.Combo(Label, ref item, _Items, VisibleItems);
-            CurrentItem = (T)Enum.ToObject(typeof(T), item);
+            string items = string.Join("\t", Items);
+            Engine.Tool.Combo(Label, ref _CurrentItem, items, VisibleItems);
         }
     }
 }

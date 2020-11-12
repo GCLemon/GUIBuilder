@@ -13,11 +13,15 @@ namespace GUIBuilder.Test
             GUIManagerNode node = new GUIManagerNode();
             Engine.AddNode(node);
             
-            node.AddGUIItem(GUIItem.CreateFromXML("WindowTest.xml"));
+            node.AddGUIItem(Altseed2.GUIBuilder.Instance.CreateFromXMLFile("WindowTest.xml"));
 
             while(Engine.DoEvents())
             {
                 Engine.Update();
+                if(node.GetItemsWithAttr<GUIWindow>("").GetItemsWithAttr<GUIButton>("fugafuga").IsClicked)
+                {
+                    System.Console.WriteLine("FUGA");
+                }
             }
 
             Engine.Terminate();

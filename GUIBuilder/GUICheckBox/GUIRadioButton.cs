@@ -1,5 +1,3 @@
-using System;
-
 namespace Altseed2
 {
     public class GUIRadioButton : GUIItem
