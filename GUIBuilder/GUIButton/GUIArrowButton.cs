@@ -6,12 +6,7 @@ namespace Altseed2
     {
         public ToolDir Driection { get; set; }
 
-        public event Action OnClicked
-        {
-            add { _OnClicked += value; }
-            remove { _OnClicked -= value; }
-        }
-        private event Action _OnClicked;
+        public bool IsClicked { get; private set; }
 
         public GUIArrowButton()
         {
@@ -20,8 +15,7 @@ namespace Altseed2
 
         protected override void OnUpdate()
         {
-            if(Engine.Tool.ArrowButton(Label, Driection))
-                if(_OnClicked != null) _OnClicked();
+            IsClicked = Engine.Tool.ArrowButton(Label, Driection);
         }
     }
 }

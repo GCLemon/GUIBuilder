@@ -11,17 +11,11 @@ namespace Altseed2
         }
         private bool _IsChecked;
 
-        public event Action OnClicked
-        {
-            add { _OnClicked += value; }
-            remove { _OnClicked -= value; }
-        }
-        private event Action _OnClicked;
+        public bool IsClicked { get; private set; }
 
         protected override void OnUpdate()
         {
-            if(Engine.Tool.CheckBox(Label, ref _IsChecked))
-                if(_OnClicked != null) _OnClicked();
+            IsClicked = Engine.Tool.CheckBox(Label, ref _IsChecked);
         }
     }
 }

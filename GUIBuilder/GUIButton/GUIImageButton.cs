@@ -12,12 +12,7 @@ namespace Altseed2
         public Color BorderColor { get; set; }
         public int FramePadding { get; set; }
 
-        public event Action OnClicked
-        {
-            add { _OnClicked += value; }
-            remove { _OnClicked -= value; }
-        }
-        private event Action _OnClicked;
+        public bool IsClicked { get; private set; }
 
         public GUIImageButton()
         {
@@ -31,8 +26,7 @@ namespace Altseed2
         
         protected override void OnUpdate()
         {
-            if(Engine.Tool.ImageButton(Image, ButtonSize, UV0, UV1, FramePadding, TintColor, BorderColor))
-                if(_OnClicked != null) _OnClicked();
+            IsClicked = Engine.Tool.ImageButton(Image, ButtonSize, UV0, UV1, FramePadding, TintColor, BorderColor);
         }
     }
 }

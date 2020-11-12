@@ -11,20 +11,11 @@ namespace Altseed2
         }
         private bool _IsActive;
 
-        public event Action OnClicked
-        {
-            add { _OnClicked += value; }
-            remove { _OnClicked -= value; }
-        }
-        private event Action _OnClicked;
+        public bool IsClicked { get; private set; }
 
         protected override void OnUpdate()
         {
-            if(Engine.Tool.RadioButton(Label, _IsActive))
-            {
-                if(_OnClicked != null) _OnClicked();
-                _IsActive = !_IsActive;
-            }
+            if(IsClicked = Engine.Tool.RadioButton(Label, _IsActive)) _IsActive = !_IsActive;
         }
     }
 }
