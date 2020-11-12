@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<Window Name="Edit Palette">
+    <SameLine>
+        <Text Text="AIUEO" />
+    </SameLine>
+</Window>
