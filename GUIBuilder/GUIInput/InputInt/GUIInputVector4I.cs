@@ -2,11 +2,11 @@ using System;
 
 namespace Altseed2
 {
-    public class GUIInputVector4I : GUIItem
-    {   
+    public class GUIInputInt4 : GUIItem
+    {
         public Vector4I InputValue => _InputValue;
-        private Vector4I _InputValue;
-        
+        protected Vector4I _InputValue;
+
         protected override void OnUpdate()
         {
             int[] input = new int[4]

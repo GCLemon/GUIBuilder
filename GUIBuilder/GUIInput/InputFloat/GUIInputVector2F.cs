@@ -2,10 +2,10 @@ using System;
 
 namespace Altseed2
 {
-    public class GUIInputVector2F : GUIItem
-    {   
+    public class GUIInputFloat2 : GUIItem
+    {
         public Vector2F InputValue => _InputValue;
-        private Vector2F _InputValue;
+        protected Vector2F _InputValue;
 
         protected override void OnUpdate()
         {

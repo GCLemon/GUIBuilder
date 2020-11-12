@@ -9,8 +9,8 @@ namespace Altseed2
         public Color TintColor { get; set; }
         public Color BorderColor { get; set; }
         public int FramePadding { get; set; }
-
-        public bool IsClicked { get; private set; }
+        
+        public bool IsClicked { get; protected set; }
 
         public GUIImageButton()
         {

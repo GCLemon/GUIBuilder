@@ -2,11 +2,11 @@ using System.Collections.Generic;
 
 namespace Altseed2
 {
-    public abstract class GUICollection : GUIItem
+    public class GUIMainMenuBar : GUIItem
     {
-        protected readonly List<GUIItem> _GUIItems;
-        
-        public GUICollection()
+        private readonly List<GUIItem> _GUIItems;
+
+        public GUIMainMenuBar()
         {
             _GUIItems = new List<GUIItem>();
         }
@@ -54,6 +54,15 @@ namespace Altseed2
         public T GetItemWithNameAttr<T>(string name, string attr) where T : GUIItem
         {
             return (T)_GUIItems.Find(x => x.Name == name && x.Attr == attr);
+        }
+
+        protected override void OnUpdate()
+        {
+            if(Engine.Tool.BeginMainMenuBar())
+            {
+                _GUIItems.ForEach(x => x.Update());
+                Engine.Tool.EndMainMenuBar();
+            }
         }
     }
 }
