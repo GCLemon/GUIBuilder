@@ -7,6 +7,8 @@ namespace Altseed2
         private readonly List<GUIItem> _GUIItems;
 
         public ToolWindowFlags Flags { get; set; }
+        public Vector2F Position { get; set; }
+        public Vector2F Size { get; set; }
         
         public GUIWindow()
         {
@@ -62,6 +64,8 @@ namespace Altseed2
         {
             if(Engine.Tool.Begin(Label, Flags))
             {
+                Engine.Tool.SetWindowPosWithCond(Position, ToolCond.None);
+                Engine.Tool.SetWindowSize(Size);
                 _GUIItems.ForEach(x => x.Update());
                 Engine.Tool.End();
             }

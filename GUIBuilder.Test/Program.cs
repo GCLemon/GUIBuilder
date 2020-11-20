@@ -8,7 +8,7 @@ namespace GUIBuilder.Test
         {
             Configuration config = new Configuration();
             config.EnabledCoreModules = CoreModules.Default | CoreModules.Tool;
-            Engine.Initialize("GUI Builder Test", 640, 480, config);
+            Engine.Initialize("GUI Builder Test", 960, 720, config);
 
             GUIManagerNode node = new GUIManagerNode();
             Engine.AddNode(node);
@@ -18,10 +18,6 @@ namespace GUIBuilder.Test
             while(Engine.DoEvents())
             {
                 Engine.Update();
-                if(node.GetItemsWithAttr<GUIWindow>("").GetItemsWithAttr<GUIButton>("fugafuga").IsClicked)
-                {
-                    System.Console.WriteLine("FUGA");
-                }
             }
 
             Engine.Terminate();

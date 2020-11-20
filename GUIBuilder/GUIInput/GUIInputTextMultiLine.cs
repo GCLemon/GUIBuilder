@@ -1,23 +1,24 @@
 namespace Altseed2
 {
-    public class GUIInputText : GUIItem
+    public class GUIInputTextMultiLine : GUIItem
     {
-        public int MaxLength { get; set; }
         public ToolInputTextFlags Flags { get; set; }
+        public int MaxLength { get; set; }
+        public Vector2F Size { get; set; }
 
         public string InputValue => _InputValue;
         protected string _InputValue;
 
-        public GUIInputText()
+        public GUIInputTextMultiLine()
         {
-            MaxLength = 32;
+            MaxLength = 128;
             Flags = ToolInputTextFlags.None;
             _InputValue = "";
         }
 
         protected override void OnUpdate()
         {
-            string input = Engine.Tool.InputText(Label, _InputValue, MaxLength, Flags);
+            string input = Engine.Tool.InputTextMultiline(Label, _InputValue, MaxLength, Size, Flags);
             if(input != null) _InputValue = input;
         }
     }

@@ -1,10 +1,48 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
-<Window Name="Edit Palette">
+<Window Name="Edit Palette" Size="510,450" Pos="450,20" Flags="NoTitleBar|NoResize|NoMove">
     <SameLine>
-        <Text Name="hoge" />
-        <Button Name="fuga" Attr="fugafuga" />
+        <Text Name="Quantize : "/>
+        <InputInt Attr="Quantize" ValueNum="1"/>
     </SameLine>
-    <ArrowButton Attr="piyo" Direction="Right" />
-    <InputText Attr="aaaa" />
+    <Text Name="Edit Mode :"/>
+    <SameLine>
+        <ImageButton Path="Resource/Image/Append.png" Size="32,32"/>
+        <ImageButton Path="Resource/Image/Select.png" Size="32,32"/>
+        <ImageButton Path="Resource/Image/Delete.png" Size="32,32"/>
+    </SameLine>
+    <Separator />
+    <Text Name="Object Palette :"/>
+    <SameLine>
+        <ImageButton Path="Resource/Image/Tap_Button.png" Size="32,32"/>
+        <ImageButton Path="Resource/Image/Hold_Button.png" Size="32,32"/>
+        <ImageButton Path="Resource/Image/Swipe_Right_Button.png" Size="32,32"/>
+        <ImageButton Path="Resource/Image/Slide_Right_Button.png" Size="32,32"/>
+        <ImageButton Path="Resource/Image/Swipe_Left_Button.png" Size="32,32"/>
+        <ImageButton Path="Resource/Image/Slide_Left_Button.png" Size="32,32"/>
+        <ImageButton Path="Resource/Image/SpeedChange_Button.png" Size="32,32"/>
+        <ImageButton Path="Resource/Image/TempoChange_Button.png" Size="32,32"/>
+        <ImageButton Path="Resource/Image/MeasureChange_Button.png" Size="32,32"/>
+    </SameLine>
+    <Separator />
+    <SameLine>
+        <Text Name="Timing :        "/>
+        <InputFloat Attr="Timing" ValueNum="1"/>
+    </SameLine>
+    <SameLine>
+        <Text Name="Length :        "/>
+        <InputFloat Attr="Length" ValueNum="1"/>
+    </SameLine>
+    <SameLine>
+        <Text Name="After Speed :   "/>
+        <InputFloat Attr="AfterSpeed" ValueNum="1"/>
+    </SameLine>
+    <SameLine>
+        <Text Name="After Tempo :   "/>
+        <InputFloat Attr="AfterTempo" ValueNum="1"/>
+    </SameLine>
+    <SameLine>
+        <Text Name="After Measure : "/>
+        <InputInt Attr="AfterMeasure" ValueNum="1"/>
+    </SameLine>
 </Window>

@@ -19,79 +19,61 @@ namespace Altseed2
 
         private GUIItem CreateFromXML(XmlElement element)
         {
-            switch(element.Name)
+            GUIItem item = element.Name switch
             {
-                case "Window":
-                    return CreateWindow(element);
-                    
-                case "Group":
-                    return CreateGroup(element);
+                "Window" => CreateWindow(element),
+                "Group" => CreateGroup(element),
+                "MenuBar" => CreateMenuBar(element),
+                "MainMenuBar" => CreateMainMenuBar(element),
 
-                case "MenuBar":
-                    return CreateMenuBar(element);
+                "Text" => CreateText(element),
 
-                case "MainMenuBar":
-                    return CreateMainMenuBar(element);
+                "Button" => CreateButton(element),
+                "ImageButton" => CreateImageButton(element),
+                "ArrowButton" => CreateArrowButton(element),
 
-                case "Text":
-                    return CreateText(element);
+                "InputText" => CreateInputText(element),
+                "InputTextMultiLine" => CreateInputTextMultiLine(element),
+                "InputInt" => CreateInputInt(element),
+                "InputFloat" => CreateInputFloat(element),
 
-                case "Button":
-                    return CreateButton(element);
+                "Separator" => CreateSeparator(element),
 
-                case "ImageButton":
-                    return CreateImageButton(element);
+                _ => throw new NotSupportedException()
+            };
 
-                case "ArrowButton":
-                    return CreateArrowButton(element);
-
-                case "SmallButton":
-                    return CreateSmallButton(element);
-
-                case "InputText":
-                    return CreateInputText(element);
-
-                case "InputTextMultiLine":
-                    return CreateInputTextMultiline(element);
-
-                case "InputTextWithHint":
-                    return CreateInputTextWithHint(element);
-
-                case "InputInt":
-                    return CreateInputInt(element);
-
-                case "InputInt2":
-                    return CreateInputInt2(element);
-
-                case "InputInt3":
-                    return CreateInputInt3(element);
-
-                case "InputInt4":
-                    return CreateInputInt4(element);
-
-                case "InputFloat":
-                    return CreateInputFloat(element);
-
-                case "InputFloat2":
-                    return CreateInputFloat2(element);
-
-                case "InputFloat3":
-                    return CreateInputFloat3(element);
-
-                case "InputFloat4":
-                    return CreateInputFloat4(element);
-
-                default:
-                    throw new NotSupportedException();
-            }
+            item.Name = element.GetAttribute("Name");
+            item.Attr = element.GetAttribute("Attr");
+            if(Boolean.TryParse(element.GetAttribute("IsUpdated"), out bool isUpdated)) item.IsUpdated = isUpdated;
+            return item;
         }
 
         private GUIWindow CreateWindow(XmlElement element)
         {
             GUIWindow item = new GUIWindow();
-            item.Name = element.GetAttribute("Name");
-            item.Attr = element.GetAttribute("Attr");
 
+            string[] value = null;
+
+            value = element.GetAttribute("Size").Split(",");
+            if(value.Length == 2)
+            {
+                if(Single.TryParse(value[0], out float width))
+                    if(Single.TryParse(value[1], out float height))
+                        item.Size = new Vector2F(width, height);
+            }
+
+            value = element.GetAttribute("Pos").Split(",");
+            if(value.Length == 2)
+            {
+                if(Single.TryParse(value[0], out float xPos))
+                    if(Single.TryParse(value[1], out float yPos))
+                        item.Position = new Vector2F(xPos, yPos);
+            }
+
+            foreach(string flag in element.GetAttribute("Flags").Split("|"))
+                if(Enum.TryParse<ToolWindowFlags>(flag, false, out ToolWindowFlags flags))
+                    item.Flags |= flags;
+            
             foreach(XmlNode child in element.ChildNodes)
             {
                 if(child.Name == "SameLine")
@@ -111,8 +93,6 @@ namespace Altseed2
         private GUIGroup CreateGroup(XmlElement element)
         {
             GUIGroup item = new GUIGroup();
-            item.Name = element.GetAttribute("Name");
-            item.Attr = element.GetAttribute("Attr");
 
             foreach(XmlNode child in element.ChildNodes)
             {
@@ -133,8 +113,6 @@ namespace Altseed2
         private GUIMenuBar CreateMenuBar(XmlElement element)
         {
             GUIMenuBar item = new GUIMenuBar();
-            item.Name = element.GetAttribute("Name");
-            item.Attr = element.GetAttribute("Attr");
 
             foreach(XmlNode child in element.ChildNodes)
             {
@@ -155,8 +133,6 @@ namespace Altseed2
         private GUIMainMenuBar CreateMainMenuBar(XmlElement element)
         {
             GUIMainMenuBar item = new GUIMainMenuBar();
-            item.Name = element.GetAttribute("Name");
-            item.Attr = element.GetAttribute("Attr");
 
             foreach(XmlNode child in element.ChildNodes)
             {
@@ -177,27 +153,40 @@ namespace Altseed2
         private GUIText CreateText(XmlElement element)
         {
             GUIText item = new GUIText();
-            item.Name = element.GetAttribute("Name");
-            item.Attr = element.GetAttribute("Attr");
-
+            item.Mode = Enum.TryParse<GUITextMode>(element.GetAttribute("Mode"), false, out GUITextMode dir) ? dir : GUITextMode.Normal;
+            if(item.Mode == GUITextMode.Colored)
+            {
+                string[] value = element.GetAttribute("Color").Split(",");
+                if(value.Length == 4)
+                {
+                    if(Int32.TryParse(value[0], out int r))
+                        if(Int32.TryParse(value[1], out int g))
+                            if(Int32.TryParse(value[2], out int b))
+                                if(Int32.TryParse(value[3], out int a))
+                                    item.Color = new Color(r, g, b, a);
+                }
+            }
             return item;
         }
 
         private GUIButton CreateButton(XmlElement element)
         {
             GUIButton item = new GUIButton();
-            item.Name = element.GetAttribute("Name");
-            item.Attr = element.GetAttribute("Attr");
-
             return item;
         }
 
         private GUIImageButton CreateImageButton(XmlElement element)
         {
             GUIImageButton item = new GUIImageButton();
-            item.Name = element.GetAttribute("Name");
-            item.Attr = element.GetAttribute("Attr");
             item.Image = Texture2D.Load(element.GetAttribute("Path"));
+
+            string[] value = element.GetAttribute("Size").Split(",");
+            if(value.Length == 2)
+            {
+                if(Single.TryParse(value[0], out float width))
+                    if(Single.TryParse(value[1], out float height))
+                        item.ImageSize = new Vector2F(width, height);
+            }
 
             return item;
         }
@@ -205,19 +194,8 @@ namespace Altseed2
         private GUIArrowButton CreateArrowButton(XmlElement element)
         {
             GUIArrowButton item = new GUIArrowButton();
-            item.Name = element.GetAttribute("Name");
-            item.Attr = element.GetAttribute("Attr");
             string dirStr = element.GetAttribute("Direction");
             item.Driection = Enum.TryParse<ToolDir>(dirStr, false, out ToolDir dir) ? dir : ToolDir.None;
-
-            return item;
-        }
-
-        private GUISmallButton CreateSmallButton(XmlElement element)
-        {
-            GUISmallButton item = new GUISmallButton();
-            item.Name = element.GetAttribute("Name");
-            item.Attr = element.GetAttribute("Attr");
 
             return item;
         }
@@ -225,100 +203,33 @@ namespace Altseed2
         private GUIInputText CreateInputText(XmlElement element)
         {
             GUIInputText item = new GUIInputText();
-            item.Name = element.GetAttribute("Name");
-            item.Attr = element.GetAttribute("Attr");
-            
+            item.Hint = element.GetAttribute("Hint");
             return item;
         }
 
-        private GUIInputTextMultiline CreateInputTextMultiline(XmlElement element)
+        private GUIInputTextMultiLine CreateInputTextMultiLine(XmlElement element)
         {
-            GUIInputTextMultiline item = new GUIInputTextMultiline();
-            item.Name = element.GetAttribute("Name");
-            item.Attr = element.GetAttribute("Attr");
-            
-            return item;
-        }
-
-        private GUIInputTextWithHint CreateInputTextWithHint(XmlElement element)
-        {
-            GUIInputTextWithHint item = new GUIInputTextWithHint();
-            item.Name = element.GetAttribute("Name");
-            item.Attr = element.GetAttribute("Attr");
-            
+            GUIInputTextMultiLine item = new GUIInputTextMultiLine();
             return item;
         }
 
         private GUIInputInt CreateInputInt(XmlElement element)
         {
             GUIInputInt item = new GUIInputInt();
-            item.Name = element.GetAttribute("Name");
-            item.Attr = element.GetAttribute("Attr");
-            
-            return item;
-        }
-
-        private GUIInputInt2 CreateInputInt2(XmlElement element)
-        {
-            GUIInputInt2 item = new GUIInputInt2();
-            item.Name = element.GetAttribute("Name");
-            item.Attr = element.GetAttribute("Attr");
-            
-            return item;
-        }
-
-        private GUIInputInt3 CreateInputInt3(XmlElement element)
-        {
-            GUIInputInt3 item = new GUIInputInt3();
-            item.Name = element.GetAttribute("Name");
-            item.Attr = element.GetAttribute("Attr");
-            
-            return item;
-        }
-
-        private GUIInputInt4 CreateInputInt4(XmlElement element)
-        {
-            GUIInputInt4 item = new GUIInputInt4();
-            item.Name = element.GetAttribute("Name");
-            item.Attr = element.GetAttribute("Attr");
-            
+            if(Int32.TryParse(element.GetAttribute("ValueNum"), out int valueNum)) item.ValueNum = valueNum;
             return item;
         }
 
         private GUIInputFloat CreateInputFloat(XmlElement element)
         {
             GUIInputFloat item = new GUIInputFloat();
-            item.Name = element.GetAttribute("Name");
-            item.Attr = element.GetAttribute("Attr");
-            
+            if(Int32.TryParse(element.GetAttribute("ValueNum"), out int valueNum)) item.ValueNum = valueNum;
             return item;
         }
 
-        private GUIInputFloat2 CreateInputFloat2(XmlElement element)
+        private GUISeparator CreateSeparator(XmlElement element)
         {
-            GUIInputFloat2 item = new GUIInputFloat2();
-            item.Name = element.GetAttribute("Name");
-            item.Attr = element.GetAttribute("Attr");
-            
-            return item;
-        }
-
-        private GUIInputFloat3 CreateInputFloat3(XmlElement element)
-        {
-            GUIInputFloat3 item = new GUIInputFloat3();
-            item.Name = element.GetAttribute("Name");
-            item.Attr = element.GetAttribute("Attr");
-            
-            return item;
-        }
-
-        private GUIInputFloat4 CreateInputFloat4(XmlElement element)
-        {
-            GUIInputFloat4 item = new GUIInputFloat4();
-            item.Name = element.GetAttribute("Name");
-            item.Attr = element.GetAttribute("Attr");
-            
-            return item;
+            return new GUISeparator();
         }
     }
 }
