@@ -26,7 +26,7 @@ namespace Altseed2
             _GUIItems.Clear();
         }
 
-        public GUIMenuItem GetItemsWithName(string name)
+        public GUIMenuItem GetItemWithName(string name)
         {
             return _GUIItems.Find(x => x.Name == name);
         }

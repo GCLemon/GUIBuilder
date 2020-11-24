@@ -30,12 +30,12 @@ namespace Altseed2
             _GUIItems.Clear();
         }
 
-        public GUIItem GetItemsWithName(string name)
+        public GUIItem GetItemWithName(string name)
         {
             return _GUIItems.Find(x => x.Name == name);
         }
 
-        public T GetItemsWithName<T>(string name) where T : GUIItem
+        public T GetItemWithName<T>(string name) where T : GUIItem
         {
             return (T)_GUIItems.Find(x => x.Name == name);
         }
@@ -45,7 +45,7 @@ namespace Altseed2
             return _GUIItems.Find(x => x.Attr == attr);
         }
 
-        public T GetItemsWithAttr<T>(string attr) where T : GUIItem
+        public T GetItemWithAttr<T>(string attr) where T : GUIItem
         {
             return (T)_GUIItems.Find(x => x.Attr == attr);
         }
