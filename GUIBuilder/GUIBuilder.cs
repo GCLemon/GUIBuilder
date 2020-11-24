@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 
 namespace Altseed2
@@ -23,8 +25,11 @@ namespace Altseed2
             {
                 "Window" => CreateWindow(element),
                 "Group" => CreateGroup(element),
+
                 "MenuBar" => CreateMenuBar(element),
                 "MainMenuBar" => CreateMainMenuBar(element),
+                "Menu" => CreateMenu(element),
+                "MenuItem" => CreateMenuItem(element),
 
                 "Text" => CreateText(element),
 
@@ -37,13 +42,15 @@ namespace Altseed2
                 "InputInt" => CreateInputInt(element),
                 "InputFloat" => CreateInputFloat(element),
 
+                "Combo" => CreateCombo(element),
+
                 "Separator" => CreateSeparator(element),
 
                 _ => throw new NotSupportedException()
             };
 
-            item.Name = element.GetAttribute("Name");
-            item.Attr = element.GetAttribute("Attr");
+            if(item.Name == "") item.Name = element.GetAttribute("Name");
+            if(item.Attr == "") item.Attr = element.GetAttribute("Attr");
             if(Boolean.TryParse(element.GetAttribute("IsUpdated"), out bool isUpdated)) item.IsUpdated = isUpdated;
             return item;
         }
@@ -54,37 +61,52 @@ namespace Altseed2
 
             string[] value = null;
 
-            value = element.GetAttribute("Size").Split(",");
-            if(value.Length == 2)
+            foreach(XmlElement e in element.ChildNodes)
             {
-                if(Single.TryParse(value[0], out float width))
-                    if(Single.TryParse(value[1], out float height))
-                        item.Size = new Vector2F(width, height);
-            }
-
-            value = element.GetAttribute("Pos").Split(",");
-            if(value.Length == 2)
-            {
-                if(Single.TryParse(value[0], out float xPos))
-                    if(Single.TryParse(value[1], out float yPos))
-                        item.Position = new Vector2F(xPos, yPos);
-            }
-
-            foreach(string flag in element.GetAttribute("Flags").Split("|"))
-                if(Enum.TryParse<ToolWindowFlags>(flag, false, out ToolWindowFlags flags))
-                    item.Flags |= flags;
-            
-            foreach(XmlNode child in element.ChildNodes)
-            {
-                if(child.Name == "SameLine")
-                    for(int i = 0; i < child.ChildNodes.Count; ++i)
+                if(e.Name == "Name")
+                {
+                    item.Name = e.InnerText;
+                }
+                if(e.Name == "Size")
+                {
+                    value = e.InnerText.Split(",");
+                    if(value.Length == 2)
                     {
-                        GUIItem sameLineItem = CreateFromXML((XmlElement)child.ChildNodes[i]);
-                        sameLineItem.IsSameLine = i != 0;
-                        item.AddGUIItem(sameLineItem);
+                        if(Single.TryParse(value[0], out float width))
+                            if(Single.TryParse(value[1], out float height))
+                                item.Size = new Vector2F(width, height);
                     }
-                
-                else item.AddGUIItem(CreateFromXML((XmlElement)child));
+                }
+                if(e.Name == "Position")
+                {
+                    value = e.InnerText.Split(",");
+                    if(value.Length == 2)
+                    {
+                        if(Single.TryParse(value[0], out float xPos))
+                            if(Single.TryParse(value[1], out float yPos))
+                                item.Position = new Vector2F(xPos, yPos);
+                    }
+                }
+                if(e.Name == "Flags")
+                {
+                    foreach(string flag in e.InnerText.Split("|"))
+                        if(Enum.TryParse<ToolWindowFlags>(flag, false, out ToolWindowFlags flags))
+                            item.Flags |= flags;
+                }
+                if(e.Name == "Body")
+                {
+                    foreach(XmlNode child in e.ChildNodes)
+                    {
+                        if(child.Name == "SameLine")
+                            for(int i = 0; i < child.ChildNodes.Count; ++i)
+                            {
+                                GUIItem sameLineItem = CreateFromXML((XmlElement)child.ChildNodes[i]);
+                                sameLineItem.IsSameLine = i != 0;
+                                item.AddGUIItem(sameLineItem);
+                            }
+                        else item.AddGUIItem(CreateFromXML((XmlElement)child));
+                    }
+                }
             }
 
             return item;
@@ -150,6 +172,29 @@ namespace Altseed2
             return item;
         }
 
+        private GUIMenu CreateMenu(XmlElement element)
+        {
+            GUIMenu item = new GUIMenu();
+
+            foreach(XmlNode child in element.ChildNodes)
+                item.AddGUIItem(CreateMenuItem((XmlElement)child));
+
+            return item;
+        }
+
+        private GUIMenuItem CreateMenuItem(XmlElement element)
+        {
+            GUIMenuItem item = new GUIMenuItem();
+
+            item.Name = element.InnerText;
+            item.Shortcut = element.GetAttribute("Shortcut");
+            if(Boolean.TryParse(element.GetAttribute("IsEnabled"), out bool isEnabled)) item.IsEnabled = isEnabled;
+            if(Boolean.TryParse(element.GetAttribute("IsPressed"), out bool isPressed)) item.IsPressed = isPressed;
+            if(Boolean.TryParse(element.GetAttribute("IsSelected"), out bool isSelected)) item.IsSelected = isSelected;
+
+            return item;
+        }
+
         private GUIText CreateText(XmlElement element)
         {
             GUIText item = new GUIText();
@@ -166,6 +211,8 @@ namespace Altseed2
                                     item.Color = new Color(r, g, b, a);
                 }
             }
+
+            item.Name = element.InnerText;
             return item;
         }
 
@@ -204,12 +251,14 @@ namespace Altseed2
         {
             GUIInputText item = new GUIInputText();
             item.Hint = element.GetAttribute("Hint");
+            item.InputValue = element.InnerText;
             return item;
         }
 
         private GUIInputTextMultiLine CreateInputTextMultiLine(XmlElement element)
         {
             GUIInputTextMultiLine item = new GUIInputTextMultiLine();
+            item.InputValue = element.InnerText;
             return item;
         }
 
@@ -217,6 +266,11 @@ namespace Altseed2
         {
             GUIInputInt item = new GUIInputInt();
             if(Int32.TryParse(element.GetAttribute("ValueNum"), out int valueNum)) item.ValueNum = valueNum;
+            
+            string[] strs = element.InnerText.Split(",");
+            for(int i = 0; i < strs.Length; ++i)
+                if(Int32.TryParse(strs[i], out int value)) item.Values[i] = value;
+
             return item;
         }
 
@@ -224,6 +278,21 @@ namespace Altseed2
         {
             GUIInputFloat item = new GUIInputFloat();
             if(Int32.TryParse(element.GetAttribute("ValueNum"), out int valueNum)) item.ValueNum = valueNum;
+
+            string[] strs = element.InnerText.Split(",");
+            for(int i = 0; i < strs.Length; ++i)
+                if(Single.TryParse(strs[i], out float value)) item.Values[i] = value;
+
+            return item;
+        }
+
+        private GUICombo CreateCombo(XmlElement element)
+        {
+            GUICombo item = new GUICombo();
+
+            string itemStr = element.GetAttribute("Item");
+            item.Items = itemStr.Split("|");
+
             return item;
         }
 

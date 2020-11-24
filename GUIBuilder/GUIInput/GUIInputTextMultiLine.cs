@@ -6,7 +6,11 @@ namespace Altseed2
         public int MaxLength { get; set; }
         public Vector2F Size { get; set; }
 
-        public string InputValue => _InputValue;
+        public string InputValue 
+        {
+            get => _InputValue;
+            set => _InputValue = value;
+        }
         protected string _InputValue;
 
         public GUIInputTextMultiLine()

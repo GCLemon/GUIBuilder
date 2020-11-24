@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace Altseed2
 {
     class GUICombo : GUIItem
@@ -13,12 +11,7 @@ namespace Altseed2
 
         public int VisibleItems { get; set; }
 
-        public List<string> Items { get; }
-
-        public GUICombo()
-        {
-            Items = new List<string>();
-        }
+        public string[] Items { get; set; }
 
         protected override void OnUpdate()
         {

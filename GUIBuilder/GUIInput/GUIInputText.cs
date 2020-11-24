@@ -1,5 +1,3 @@
-using System;
-
 namespace Altseed2
 {
     public class GUIInputText : GUIItem
@@ -8,7 +6,11 @@ namespace Altseed2
         public int MaxLength { get; set; }
         public string Hint { get; set; }
 
-        public string InputValue => _InputValue;
+        public string InputValue 
+        {
+            get => _InputValue;
+            set => _InputValue = value;
+        }
         protected string _InputValue;
 
         public GUIInputText()
