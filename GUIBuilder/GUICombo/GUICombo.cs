@@ -1,6 +1,6 @@
 namespace Altseed2
 {
-    class GUICombo : GUIItem
+    public class GUICombo : GUIItem
     {
         public int CurrentItem
         {

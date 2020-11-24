@@ -1,6 +1,6 @@
 namespace Altseed2
 {
-    class GUIMenuItem : GUIItem
+    public class GUIMenuItem : GUIItem
     {
         public string Shortcut { get; set; }
         public bool IsSelected { get; set; }

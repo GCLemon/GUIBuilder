@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Altseed2
 {
-    class GUIMenu : GUIItem
+    public class GUIMenu : GUIItem
     {
         private readonly List<GUIMenuItem> _GUIItems;
 
