@@ -292,6 +292,8 @@ namespace Altseed2
 
             string itemStr = element.GetAttribute("Item");
             item.Items = itemStr.Split("|");
+            if(Int32.TryParse(element.GetAttribute("VisibleItems"), out int visible)) item.VisibleItems = visible;
+            if(Int32.TryParse(element.GetAttribute("CurrentItem"), out int current)) item.CurrentItem = current;
 
             return item;
         }
